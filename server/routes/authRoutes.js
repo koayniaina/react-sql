@@ -6,10 +6,9 @@ import connectdb from "../config/db.js";
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "secretkey";
 
-// Rôles autorisés
+
 const ALLOWED_ROLES = ["client", "seller", "admin"];
 
-// 🔹 REGISTER
 router.post("/register", async (req, res) => {
   let { name, email, password, role } = req.body;
 
@@ -17,14 +16,12 @@ router.post("/register", async (req, res) => {
     return res.status(400).json({ message: "All fields required" });
   }
 
-  // rôle par défaut = "client"
   if (!role || !ALLOWED_ROLES.includes(role)) {
     role = "client";
   }
 
   console.log(`[REGISTER] Attempting to register: ${email} as ${role}`);
 
-  // vérifier si l'email existe
   connectdb.query("SELECT * FROM user WHERE email = ?", [email], async (err, data) => {
     if (err) {
       console.error("[REGISTER] DB error (SELECT):", err);
@@ -37,7 +34,6 @@ router.post("/register", async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // insérer l'utilisateur
     connectdb.query(
       "INSERT INTO user (name, email, password, role) VALUES (?, ?, ?, ?)",
       [name, email, hashedPassword, role],
@@ -61,7 +57,6 @@ router.post("/register", async (req, res) => {
   });
 });
 
-// 🔹 LOGIN
 router.post("/login", (req, res) => {
   const { email, password } = req.body;
 

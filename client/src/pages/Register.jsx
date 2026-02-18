@@ -37,8 +37,7 @@ const Register = () => {
         <button type="submit">Register</button>
       </form>
       <Link to="/">Login</Link>
-
-      {/* Toast Container */}
+      
       <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
